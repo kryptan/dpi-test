@@ -1,0 +1,11 @@
+[package]
+name = "dpi-test"
+version = "0.1.0"
+authors = ["kryptan"]
+
+[dependencies]
+glutin = "0.10.0"
+gl = "0.6.3"
+
+[patch.crates-io]
+winit = { path = "C:/projects/winit" }
