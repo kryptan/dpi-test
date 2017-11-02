@@ -2,6 +2,7 @@
 name = "dpi-test"
 version = "0.1.0"
 authors = ["kryptan"]
+license = "WTFPL"
 
 [dependencies]
 glutin = "0.10.0"
