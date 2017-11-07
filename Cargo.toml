@@ -9,4 +9,4 @@ glutin = "0.10.0"
 gl = "0.6.3"
 
 [patch.crates-io]
-winit = { path = "C:/projects/winit" }
+winit = { git = "https://github.com/kryptan/winit.git", branch = "win-dpi3" }
