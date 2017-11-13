@@ -2,7 +2,7 @@ extern crate glutin;
 extern crate gl;
 
 use std::ffi::CStr;
-use std::os::raw::c_char;
+use std::os::raw::{c_char, c_void};
 use gl::types::*;
 use glutin::GlContext;
 
@@ -35,7 +35,10 @@ fn main() {
         .with_dimensions(initial_width, initial_height);
 
     println!("Creating window");
-    let context = glutin::ContextBuilder::new().with_vsync(true);
+    let context = glutin::ContextBuilder::new()
+        .with_vsync(true)
+        .with_gl_debug_flag(true)
+        .with_gl_profile(glutin::GlProfile::Core);
     let window = glutin::GlWindow::new(builder, context, &events_loop).unwrap();
     let mut size = window.get_inner_size().unwrap();
     println!("window.get_inner_size() = {:?}", size);
@@ -52,6 +55,11 @@ fn main() {
         println!("gl::GetString(gl::{}) = {:?}", string_name, string);
     }
     println!();
+
+    unsafe {
+        gl::Enable(gl::DEBUG_OUTPUT);
+        gl::DebugMessageCallback(debug_callback, std::ptr::null_mut());
+    }
 
     let mut renderer = unsafe { Renderer::new() };
 
@@ -91,4 +99,8 @@ fn main() {
     });
 
     unsafe { renderer.cleanup() };
+}
+
+extern "system" fn debug_callback(source: GLenum, type_: GLenum, id: GLuint, severity: GLenum, _length: GLsizei, message: *const GLchar, _user_param: *mut c_void) {
+    println!("OpenGL Debug: source = {}, type = {}, id = {}, severity = {}: {}", source, type_, id, severity, unsafe { CStr::from_ptr(message).to_str().unwrap() });
 }
