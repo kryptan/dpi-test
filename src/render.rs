@@ -33,6 +33,8 @@ pub struct Renderer {
     index_buffer: GLuint,
     vertices: Vec<Vertex>,
 
+    vertex_array: GLuint,
+
     vertex_shader: GLuint,
     fragment_shader: GLuint,
     program: GLuint,
@@ -55,6 +57,10 @@ macro_rules! offset_of {
 
 impl Renderer {
     pub unsafe fn new() -> Self {
+        let mut vertex_array = 0;
+        gl::GenVertexArrays(1, &mut vertex_array);
+        gl::BindVertexArray(vertex_array);
+
         let mut vertex_buffer = 0;
         gl::GenBuffers(1, &mut vertex_buffer);
         gl::BindBuffer(gl::ARRAY_BUFFER, vertex_buffer);
@@ -103,6 +109,7 @@ impl Renderer {
             vertex_buffer,
             index_buffer,
             vertices,
+            vertex_array,
             vertex_shader,
             fragment_shader,
             program,
@@ -189,6 +196,7 @@ impl Renderer {
         gl::DeleteShader(self.fragment_shader);
         gl::DeleteShader(self.vertex_shader);
         gl::DeleteBuffers(2, [self.vertex_buffer, self.index_buffer].as_ptr());
+        gl::DeleteVertexArrays(1, &self.vertex_array);
     }
 }
 
